@@ -1,4 +1,4 @@
-package gr.uth.trofoscan.entities
+package gr.uth.ratemybite.entities
 
 enum class NutritionScore {
     A, B, C, D, E

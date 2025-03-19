@@ -1,4 +1,4 @@
-package gr.uth.trofoscan.entities
+package gr.uth.ratemybite.entities
 
 import jakarta.persistence.*
 

@@ -1,4 +1,4 @@
-package gr.uth.trofoscan.components
+package gr.uth.ratemybite.components
 
 import org.springframework.context.annotation.Configuration
 

@@ -1,4 +1,4 @@
-package gr.uth.trofoscan
+package gr.uth.ratemybite
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

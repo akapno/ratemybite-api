@@ -1,4 +1,4 @@
-package gr.uth.trofoscan.entities
+package gr.uth.ratemybite.entities
 
 import jakarta.persistence.*
 import java.util.*
@@ -12,11 +12,11 @@ class Product(
 
     @ManyToOne
     @JoinColumn(name = "food_category_id")
-    var foodCategory: FoodCategory? = null,
+    var foodCategory: FoodCategory,
 
     @ManyToOne
     @JoinColumn(name = "company_id")
-    var company: Company? = null,
+    var company: Company,
 
     @Enumerated(EnumType.STRING)
     var nutritionScore: NutritionScore? = null,

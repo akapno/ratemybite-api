@@ -1,4 +1,4 @@
-package gr.uth.trofoscan
+package gr.uth.ratemybite
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
