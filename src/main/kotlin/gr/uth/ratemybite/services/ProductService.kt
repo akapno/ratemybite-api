@@ -16,7 +16,6 @@ class ProductService @Autowired constructor(val productRepository: ProductReposi
     }
 
     fun saveProduct(product: Product) {
-        return
         return productRepository.save(product)
     }
 }
