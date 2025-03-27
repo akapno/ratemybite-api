@@ -39,6 +39,7 @@ class LoadDatabase {
                 "Preloading " + productService.saveProduct(
                     Product(
                         name = "Banana",
+                        barcode = "1212121212121",
                         nutritionScore = NutritionScore.A,
                         company = companyService.findCompanyByName("Jiggles Inc."),
                         foodCategory = foodCategoryService.findFoodCategoryByName("Fruit")

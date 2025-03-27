@@ -10,6 +10,9 @@ class Product(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
+    @Column(length = 13)
+    var barcode: String,
+
     @ManyToOne
     @JoinColumn(name = "food_category_id")
     var foodCategory: FoodCategory,
