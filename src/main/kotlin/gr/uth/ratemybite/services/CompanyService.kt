@@ -3,7 +3,6 @@ package gr.uth.ratemybite.services
 import gr.uth.ratemybite.entities.Company
 import gr.uth.ratemybite.repositories.CompanyRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Service
 import java.util.*
 
