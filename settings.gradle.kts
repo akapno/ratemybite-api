@@ -1,1 +1,1 @@
-rootProject.name = "Trofoscan"
+rootProject.name = "RateMyBite"

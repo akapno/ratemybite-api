@@ -23,10 +23,10 @@ class ProductController @Autowired constructor(val productService: ProductServic
         return productService.findProductsByName(name)
     }
 
-    @PostMapping("/products/add")
-    fun addProduct(@RequestBody product: Product): ResponseEntity<Product> {
-        companyService.saveCompany(product.company)
-        foodCategoryService.saveFoodCateogory(product.foodCategory)
-        return productService.saveProduct(product)
-    }
+//    @PostMapping("/products/add")
+//    fun addProduct(@RequestBody product: Product): ResponseEntity<Product> {
+//        companyService.saveCompany(product.company)
+//        foodCategoryService.saveFoodCateogory(product.foodCategory)
+//        return productService.saveProduct(product)
+//    }
 }

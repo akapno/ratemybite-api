@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class TrofoscanApplication
+class RateMyBiteApplication
 
 fun main(args: Array<String>) {
-    runApplication<TrofoscanApplication>(*args)
+    runApplication<RateMyBiteApplication>(*args)
 }
