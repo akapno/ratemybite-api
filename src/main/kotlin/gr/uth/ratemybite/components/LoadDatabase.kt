@@ -41,8 +41,8 @@ class LoadDatabase {
                         name = "Banana",
                         barcode = "1212121212121",
                         nutritionScore = NutritionScore.A,
-                        company = companyService.findCompanyByName("Jiggles Inc."),
-                        foodCategory = foodCategoryService.findFoodCategoryByName("Fruit")
+                        company = companyService.findCompanyByName("Jiggles Inc.").first(),
+                        foodCategory = foodCategoryService.findFoodCategoryByName("Fruit").first(),
                     )
                 ).toString()
             )

@@ -1,32 +1,60 @@
 package gr.uth.ratemybite.controllers
 
+import gr.uth.ratemybite.entities.NutritionScore
 import gr.uth.ratemybite.entities.Product
-import gr.uth.ratemybite.repositories.ProductRepository
 import gr.uth.ratemybite.services.CompanyService
 import gr.uth.ratemybite.services.FoodCategoryService
 import gr.uth.ratemybite.services.ProductService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
-@RequestMapping
-class ProductController @Autowired constructor(val productService: ProductService, val foodCategoryService: FoodCategoryService, val companyService: CompanyService) {
+@RequestMapping("/products")
+class ProductController @Autowired constructor(
+    val productService: ProductService,
+    val foodCategoryService: FoodCategoryService,
+    val companyService: CompanyService,
+) {
 
-    @GetMapping("/products/all")
+    @GetMapping("/all")
     fun findAllProducts(): List<Product> {
         return productService.findAllProducts()
     }
 
-    @GetMapping("/products/get")
-    fun FindProductsByName(@RequestParam name: String): List<Product> {
+    @GetMapping("/get/{id}")
+    fun findProductById(@PathVariable id: Long): Optional<Product> {
+        return productService.findProductById(id)
+    }
+
+    @GetMapping("/get")
+    fun findProductsByName(@RequestParam name: String): List<Product> {
         return productService.findProductsByName(name)
     }
 
-//    @PostMapping("/products/add")
-//    fun addProduct(@RequestBody product: Product): ResponseEntity<Product> {
-//        companyService.saveCompany(product.company)
-//        foodCategoryService.saveFoodCateogory(product.foodCategory)
-//        return productService.saveProduct(product)
-//    }
+    @PostMapping("/add")
+    fun addProduct(@RequestBody req: ProductRequestDTO): ResponseEntity<Product> {
+        val company = companyService.findCompanyByIdOrThrow(req.companyId)
+        val foodCategory = foodCategoryService.findFoodCategoryByIdOrThrow(req.foodCategoryId)
+
+        val saved = productService.saveProduct(Product(
+            barcode = req.barcode,
+            name = req.name,
+            nutritionScore = req.nutritionScore,
+            company = company,
+            foodCategory = foodCategory,
+            dateCreated = Date()
+        ))
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved)
+    }
 }
+
+data class ProductRequestDTO(
+    val barcode: String,
+    val name: String,
+    val nutritionScore: NutritionScore,
+    val companyId: Long,
+    val foodCategoryId: Long,
+)

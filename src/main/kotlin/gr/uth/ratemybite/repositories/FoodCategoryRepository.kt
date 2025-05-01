@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 interface FoodCategoryRepository : ListCrudRepository<FoodCategory, Long> {
-    fun save(foodCategory: FoodCategory)
-    fun findByName(name: String): FoodCategory
+    fun save(foodCategory: FoodCategory): FoodCategory
+    fun findByName(name: String): List<FoodCategory>
 }

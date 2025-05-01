@@ -17,14 +17,14 @@ class ProductService @Autowired constructor(val productRepository: ProductReposi
     }
 
     fun findProductsByName(name: String): List<Product> {
-        return productRepository.findByName(name)
+        return productRepository.findByNameIgnoreCase(name)
     }
 
     fun findProductByBarcode(barcode: String): Product {
         return productRepository.findByBarcode(barcode)
     }
 
-    fun saveProduct(product: Product) {
+    fun saveProduct(product: Product): Product {
         return productRepository.save(product)
     }
 }
