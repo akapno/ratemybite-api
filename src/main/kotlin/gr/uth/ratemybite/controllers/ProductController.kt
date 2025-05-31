@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @RestController
@@ -49,6 +50,26 @@ class ProductController @Autowired constructor(
         ))
         return ResponseEntity.status(HttpStatus.CREATED).body(saved)
     }
+
+    // Product DTO body request must have all fields completed
+    @PutMapping("/update/{id}")
+    fun updateProduct(@PathVariable id: Long, @RequestBody req: ProductRequestDTO): ResponseEntity<Product> {
+        val existingProduct = productService.findProductByIdOrThrow(id)
+
+        val company = companyService.findCompanyByIdOrThrow(req.companyId)
+        val foodCategory = foodCategoryService.findFoodCategoryByIdOrThrow(req.foodCategoryId)
+
+        existingProduct.apply {
+            barcode = req.barcode
+            name = req.name
+            nutritionScore = req.nutritionScore
+            this.company = company
+            this.foodCategory = foodCategory
+        }
+
+        return ResponseEntity.ok(productService.saveProduct(existingProduct))
+    }
+
 }
 
 data class ProductRequestDTO(
