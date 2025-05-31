@@ -45,7 +45,7 @@ class LoadDatabase {
                     Ingredient(
                         name = "Wheat",
                         allergen = false,
-                        description = "nigga",
+                        description = "Harvert",
                         points = 100
                     )
                 )
