@@ -1,9 +1,12 @@
 package gr.uth.ratemybite.components
 
+import gr.uth.ratemybite.controllers.IngredientController
+import gr.uth.ratemybite.controllers.ProductController
+import gr.uth.ratemybite.dto.ProductRequestDTO
 import gr.uth.ratemybite.entities.Company
 import gr.uth.ratemybite.entities.FoodCategory
+import gr.uth.ratemybite.entities.Ingredient
 import gr.uth.ratemybite.entities.NutritionScore
-import gr.uth.ratemybite.entities.Product
 import gr.uth.ratemybite.services.CompanyService
 import gr.uth.ratemybite.services.FoodCategoryService
 import gr.uth.ratemybite.services.ProductService
@@ -22,7 +25,9 @@ class LoadDatabase {
     fun initDatabase(
         @Autowired productService: ProductService,
         @Autowired companyService: CompanyService,
-        @Autowired foodCategoryService: FoodCategoryService
+        @Autowired foodCategoryService: FoodCategoryService,
+        @Autowired productController: ProductController,
+        @Autowired ingredientController: IngredientController
     ): CommandLineRunner {
         return CommandLineRunner { args ->
             logger.info(
@@ -36,13 +41,32 @@ class LoadDatabase {
                 ).toString()
             )
             logger.info(
-                "Preloading " + productService.saveProduct(
-                    Product(
+                "Preloading " + ingredientController.addIngredient(
+                    Ingredient(
+                        name = "Wheat",
+                        allergen = false,
+                        description = "nigga",
+                        points = 100
+                    )
+                )
+            ).toString()
+            logger.info(
+                "Preloading " + productController.addProduct(
+//                    Product(
+//                        name = "Banana",
+//                        barcode = "1212121212121",
+//                        nutritionScore = NutritionScore.A,
+//                        company = companyService.findCompanyByName("Jiggles Inc.").first(),
+//                        foodCategory = foodCategoryService.findFoodCategoryByName("Fruit").first(),
+//                        ingredients = mutableSetOf("alcohol")
+//                    )
+                    ProductRequestDTO(
                         name = "Banana",
                         barcode = "1212121212121",
                         nutritionScore = NutritionScore.A,
-                        company = companyService.findCompanyByName("Jiggles Inc.").first(),
-                        foodCategory = foodCategoryService.findFoodCategoryByName("Fruit").first(),
+                        companyId = 1,
+                        foodCategoryId = 1,
+                        ingredientIds = listOf(1)
                     )
                 ).toString()
             )
