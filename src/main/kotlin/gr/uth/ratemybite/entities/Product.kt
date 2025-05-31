@@ -21,6 +21,14 @@ class Product(
     @JoinColumn(name = "company_id")
     var company: Company,
 
+    @ManyToMany
+    @JoinTable(
+        name = "product_ingredients",
+        joinColumns = [JoinColumn(name = "product_id")],
+        inverseJoinColumns = [JoinColumn(name = "ingredient_id")]
+    )
+    var ingredients: MutableSet<Ingredient> = mutableSetOf(),
+
     @Enumerated(EnumType.STRING)
     var nutritionScore: NutritionScore? = null,
 

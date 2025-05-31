@@ -1,15 +1,12 @@
 package gr.uth.ratemybite.controllers
 
-import gr.uth.ratemybite.entities.Company
 import gr.uth.ratemybite.entities.FoodCategory
-import gr.uth.ratemybite.services.CompanyService
 import gr.uth.ratemybite.services.FoodCategoryService
-import org.apache.coyote.Response
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.Optional
+import java.util.*
 
 @RestController
 @RequestMapping("/foodcategories")
@@ -34,5 +31,16 @@ class FoodCategoryController @Autowired constructor(val foodCategoryService: Foo
     fun addFoodCategory(@RequestParam name: String): ResponseEntity<FoodCategory> {
         val saved = foodCategoryService.saveFoodCateogory(FoodCategory(name = name))
         return ResponseEntity.status(HttpStatus.CREATED).body(saved)
+    }
+
+    @PutMapping("/update/{id}")
+    fun updateFoodCategory(@PathVariable id: Long, @RequestBody req: FoodCategory): ResponseEntity<FoodCategory> {
+        val existingFoodCategory = foodCategoryService.findFoodCategoryByIdOrThrow(id)
+
+        existingFoodCategory.apply {
+            name = req.name
+        }
+
+        return ResponseEntity.ok(foodCategoryService.saveFoodCateogory(existingFoodCategory))
     }
 }

@@ -1,9 +1,10 @@
 package gr.uth.ratemybite.controllers
 
-import gr.uth.ratemybite.entities.NutritionScore
+import gr.uth.ratemybite.dto.ProductRequestDTO
 import gr.uth.ratemybite.entities.Product
 import gr.uth.ratemybite.services.CompanyService
 import gr.uth.ratemybite.services.FoodCategoryService
+import gr.uth.ratemybite.services.IngredientService
 import gr.uth.ratemybite.services.ProductService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -17,6 +18,7 @@ class ProductController @Autowired constructor(
     val productService: ProductService,
     val foodCategoryService: FoodCategoryService,
     val companyService: CompanyService,
+    val ingredientService: IngredientService,
 ) {
 
     @GetMapping("/all")
@@ -38,23 +40,45 @@ class ProductController @Autowired constructor(
     fun addProduct(@RequestBody req: ProductRequestDTO): ResponseEntity<Product> {
         val company = companyService.findCompanyByIdOrThrow(req.companyId)
         val foodCategory = foodCategoryService.findFoodCategoryByIdOrThrow(req.foodCategoryId)
+        val ingredients = mapIdsToIngredients(req)
 
-        val saved = productService.saveProduct(Product(
-            barcode = req.barcode,
-            name = req.name,
-            nutritionScore = req.nutritionScore,
-            company = company,
-            foodCategory = foodCategory,
-            dateCreated = Date()
-        ))
+        val saved = productService.saveProduct(
+            Product(
+                barcode = req.barcode,
+                name = req.name,
+                nutritionScore = req.nutritionScore,
+                ingredients = ingredients,
+                company = company,
+                foodCategory = foodCategory,
+                dateCreated = Date()
+            )
+        )
         return ResponseEntity.status(HttpStatus.CREATED).body(saved)
     }
-}
 
-data class ProductRequestDTO(
-    val barcode: String,
-    val name: String,
-    val nutritionScore: NutritionScore,
-    val companyId: Long,
-    val foodCategoryId: Long,
-)
+    // Product DTO body request must have all fields completed
+    @PutMapping("/update/{id}")
+    fun updateProduct(@PathVariable id: Long, @RequestBody req: ProductRequestDTO): ResponseEntity<Product> {
+        val existingProduct = productService.findProductByIdOrThrow(id)
+
+        val company = companyService.findCompanyByIdOrThrow(req.companyId)
+        val foodCategory = foodCategoryService.findFoodCategoryByIdOrThrow(req.foodCategoryId)
+        val ingredients = mapIdsToIngredients(req)
+
+        existingProduct.apply {
+            barcode = req.barcode
+            name = req.name
+            nutritionScore = req.nutritionScore
+            this.ingredients = ingredients
+            this.company = company
+            this.foodCategory = foodCategory
+        }
+
+        return ResponseEntity.ok(productService.saveProduct(existingProduct))
+    }
+
+    fun mapIdsToIngredients(req: ProductRequestDTO) =
+        req.ingredientIds?.map {
+            ingredientService.findIngredientByIdOrThrow(it)
+        }?.toMutableSet() ?: mutableSetOf()
+}
