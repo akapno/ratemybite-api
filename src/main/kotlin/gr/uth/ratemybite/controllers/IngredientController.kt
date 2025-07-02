@@ -41,4 +41,11 @@ class IngredientController @Autowired constructor(val ingredientService: Ingredi
                     description = req.description
                 })
         )
+
+    @DeleteMapping("/{id}")
+    fun deleteIngredientById(@PathVariable id: Long): ResponseEntity<Void> {
+        val company = ingredientService.findIngredientByIdOrThrow(id)
+        ingredientService.deleteIngredientById(company.id!!)
+        return ResponseEntity.noContent().build()
+    }
 }

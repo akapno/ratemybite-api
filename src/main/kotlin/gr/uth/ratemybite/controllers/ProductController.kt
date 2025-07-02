@@ -6,6 +6,7 @@ import gr.uth.ratemybite.services.CompanyService
 import gr.uth.ratemybite.services.FoodCategoryService
 import gr.uth.ratemybite.services.IngredientService
 import gr.uth.ratemybite.services.ProductService
+import org.apache.coyote.Response
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -75,6 +76,13 @@ class ProductController @Autowired constructor(
         }
 
         return ResponseEntity.ok(productService.saveProduct(existingProduct))
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteProductById(@PathVariable id: Long): ResponseEntity<Void> {
+        val product = productService.findProductByIdOrThrow(id)
+        productService.deleteProductById(product.id!!)
+        return ResponseEntity.noContent().build()
     }
 
     fun mapIdsToIngredients(req: ProductRequestDTO) =

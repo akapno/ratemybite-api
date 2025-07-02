@@ -2,6 +2,7 @@ package gr.uth.ratemybite.services
 
 import gr.uth.ratemybite.entities.Company
 import gr.uth.ratemybite.repositories.CompanyRepository
+import gr.uth.ratemybite.repositories.ProductRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -9,7 +10,10 @@ import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @Service
-class CompanyService @Autowired constructor(val companyRepository: CompanyRepository) {
+class CompanyService @Autowired constructor(
+    val companyRepository: CompanyRepository,
+    val productRepository: ProductRepository
+) {
 
     fun findAllCompanies(): List<Company> {
         return companyRepository.findAll()
@@ -32,5 +36,13 @@ class CompanyService @Autowired constructor(val companyRepository: CompanyReposi
 
     fun saveCompany(company: Company): Company {
         return companyRepository.save(company)
+    }
+
+    fun deleteCompanyById(id: Long) {
+        val company = findCompanyByIdOrThrow(id)
+        if (productRepository.existsByCompany(company)) {
+            throw ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete company still used by products.")
+        }
+        companyRepository.deleteById(id)
     }
 }

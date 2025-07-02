@@ -43,4 +43,11 @@ class FoodCategoryController @Autowired constructor(val foodCategoryService: Foo
 
         return ResponseEntity.ok(foodCategoryService.saveFoodCateogory(existingFoodCategory))
     }
+
+    @DeleteMapping("/{id}")
+    fun deleteCompanyById(@PathVariable id: Long): ResponseEntity<Void> {
+        val company = foodCategoryService.findFoodCategoryByIdOrThrow(id)
+        foodCategoryService.deleteFoodCategoryById(company.id!!)
+        return ResponseEntity.noContent().build()
+    }
 }
