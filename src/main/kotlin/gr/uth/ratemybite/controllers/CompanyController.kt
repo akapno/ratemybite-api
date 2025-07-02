@@ -2,6 +2,7 @@ package gr.uth.ratemybite.controllers
 
 import gr.uth.ratemybite.entities.Company
 import gr.uth.ratemybite.services.CompanyService
+import gr.uth.ratemybite.services.ProductService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,7 +11,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/companies")
-class CompanyController @Autowired constructor(val companyService: CompanyService) {
+class CompanyController @Autowired constructor(val companyService: CompanyService, val productService: ProductService) {
 
     @GetMapping("/all")
     fun findAllCompanies(): List<Company> {
@@ -42,5 +43,12 @@ class CompanyController @Autowired constructor(val companyService: CompanyServic
         }
 
         return ResponseEntity.ok(companyService.saveCompany(existingCompany))
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteCompanyById(@PathVariable id: Long): ResponseEntity<Void> {
+        val company = companyService.findCompanyByIdOrThrow(id)
+        companyService.deleteCompanyById(company.id!!)
+        return ResponseEntity.noContent().build()
     }
 }

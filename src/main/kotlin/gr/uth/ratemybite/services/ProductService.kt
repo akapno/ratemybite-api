@@ -1,5 +1,6 @@
 package gr.uth.ratemybite.services
 
+import gr.uth.ratemybite.entities.Company
 import gr.uth.ratemybite.entities.Product
 import gr.uth.ratemybite.repositories.ProductRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,5 +37,9 @@ class ProductService @Autowired constructor(val productRepository: ProductReposi
 
     fun saveProduct(product: Product): Product {
         return productRepository.save(product)
+    }
+
+    fun deleteProductById(id: Long) {
+        return productRepository.deleteById(id)
     }
 }

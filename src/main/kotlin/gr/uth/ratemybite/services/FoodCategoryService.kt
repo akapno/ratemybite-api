@@ -2,15 +2,18 @@ package gr.uth.ratemybite.services
 
 import gr.uth.ratemybite.entities.FoodCategory
 import gr.uth.ratemybite.repositories.FoodCategoryRepository
+import gr.uth.ratemybite.repositories.ProductRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import java.util.Optional
 
 @Service
-class FoodCategoryService @Autowired constructor(val foodCategoryRepository: FoodCategoryRepository) {
+class FoodCategoryService @Autowired constructor(
+    val foodCategoryRepository: FoodCategoryRepository,
+    val productRepository: ProductRepository
+) {
 
     fun findAllFoodCategories(): List<FoodCategory> {
         return foodCategoryRepository.findAll()
@@ -33,5 +36,13 @@ class FoodCategoryService @Autowired constructor(val foodCategoryRepository: Foo
 
     fun saveFoodCateogory(foodCategory: FoodCategory): FoodCategory {
         return foodCategoryRepository.save(foodCategory)
+    }
+
+    fun deleteFoodCategoryById(id: Long) {
+        val foodCategory = findFoodCategoryByIdOrThrow(id)
+        if (productRepository.existsByFoodCategory(foodCategory)) {
+            throw ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete food category still used by products.")
+        }
+        foodCategoryRepository.deleteById(id)
     }
 }
