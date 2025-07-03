@@ -6,11 +6,11 @@ import gr.uth.ratemybite.services.CompanyService
 import gr.uth.ratemybite.services.FoodCategoryService
 import gr.uth.ratemybite.services.IngredientService
 import gr.uth.ratemybite.services.ProductService
-import org.apache.coyote.Response
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 @RestController
@@ -20,6 +20,7 @@ class ProductController @Autowired constructor(
     val foodCategoryService: FoodCategoryService,
     val companyService: CompanyService,
     val ingredientService: IngredientService,
+    val imageUploadController: ImageUploadController
 ) {
 
     @GetMapping("/all")
@@ -38,7 +39,7 @@ class ProductController @Autowired constructor(
     }
 
     @PostMapping("/add")
-    fun addProduct(@RequestBody req: ProductRequestDTO): ResponseEntity<Product> {
+    fun addProduct(@RequestParam("file") file: MultipartFile, @RequestBody req: ProductRequestDTO): ResponseEntity<Product> {
         val company = companyService.findCompanyByIdOrThrow(req.companyId)
         val foodCategory = foodCategoryService.findFoodCategoryByIdOrThrow(req.foodCategoryId)
         val ingredients = mapIdsToIngredients(req)
@@ -51,7 +52,8 @@ class ProductController @Autowired constructor(
                 ingredients = ingredients,
                 company = company,
                 foodCategory = foodCategory,
-                dateCreated = Date()
+                dateCreated = Date(),
+                imagePath = "temp"
             )
         )
         return ResponseEntity.status(HttpStatus.CREATED).body(saved)
