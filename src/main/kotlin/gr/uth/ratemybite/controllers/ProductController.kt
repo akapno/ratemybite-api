@@ -3,7 +3,6 @@ package gr.uth.ratemybite.controllers
 import gr.uth.ratemybite.dto.ProductRequestDTO
 import gr.uth.ratemybite.entities.Product
 import gr.uth.ratemybite.services.*
-import org.apache.coyote.Response
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus

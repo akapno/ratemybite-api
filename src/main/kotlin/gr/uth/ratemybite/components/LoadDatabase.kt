@@ -2,11 +2,9 @@ package gr.uth.ratemybite.components
 
 import gr.uth.ratemybite.controllers.IngredientController
 import gr.uth.ratemybite.controllers.ProductController
-import gr.uth.ratemybite.dto.ProductRequestDTO
 import gr.uth.ratemybite.entities.Company
 import gr.uth.ratemybite.entities.FoodCategory
 import gr.uth.ratemybite.entities.Ingredient
-import gr.uth.ratemybite.entities.NutritionScore
 import gr.uth.ratemybite.services.CompanyService
 import gr.uth.ratemybite.services.FoodCategoryService
 import gr.uth.ratemybite.services.ProductService
