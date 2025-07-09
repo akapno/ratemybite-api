@@ -1,8 +1,8 @@
 package gr.uth.ratemybite.controllers
 
-import org.springframework.beans.factory.annotation.Value
+import gr.uth.ratemybite.services.ImageService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.Resource
-import org.springframework.core.io.UrlResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -11,22 +11,20 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.net.MalformedURLException
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 
 
 @RestController
 @RequestMapping("/uploads")
-class ImageUploadController(@Value("\${file.upload-dir}") private val uploadDir: String) {
+class ImageUploadController @Autowired constructor(val imageService: ImageService) {
 
     @PostMapping("/image")
     fun uploadImage(@RequestParam("file") file: MultipartFile): ResponseEntity<String> {
         try {
-            val filePath = saveImage(file)
+            val filePath = imageService.saveImage(file)
             return ResponseEntity.ok("Image uploaded succesfully: " + filePath)
         } catch (e: IOException) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading image.")
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading image: ${e.message}")
         }
     }
 
@@ -36,49 +34,19 @@ class ImageUploadController(@Value("\${file.upload-dir}") private val uploadDir:
         @PathVariable filename: String
     ): ResponseEntity<Resource> {
         return try {
-            val filePath = Paths.get(uploadDir)
-                .resolve(foldername)
-                .resolve(filename)
-                .normalize()
-            val resource: Resource = UrlResource(filePath.toUri())
+            val resource: Resource = imageService.loadAsResource("$foldername/$filename")
 
-            if (resource.exists()) {
-                ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)
-                    .body(resource)
-            } else {
-                ResponseEntity.notFound().build()
-            }
+            val contentType = Files.probeContentType(
+                Paths.get(imageService.uploadDir).resolve("$foldername/$filename")
+            ) ?: MediaType.APPLICATION_OCTET_STREAM_VALUE
+
+            ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .body(resource)
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.notFound().build()
         } catch (e: MalformedURLException) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
-    }
-
-    @Throws(IOException::class)
-    fun saveImage(file: MultipartFile): String {
-        val uploadPath = Paths.get(uploadDir)
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath)
-        }
-
-        var randomDirPath: Path
-        do {
-            val randomName = randomString(10)
-            randomDirPath = uploadPath.resolve(randomName)
-        } while (Files.exists(randomDirPath))
-        Files.createDirectories(randomDirPath)
-
-        val fileName = file.originalFilename ?: "unknown"
-        val filePath = randomDirPath.resolve(fileName)
-        Files.copy(file.inputStream, filePath, StandardCopyOption.REPLACE_EXISTING)
-
-        return filePath.toString()
-    }
-
-    fun randomString(length: Int): String {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        return (1..length)
-            .map { allowedChars.random() }
-            .joinToString("")
     }
 }

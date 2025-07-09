@@ -34,6 +34,6 @@ class Product(
 
     @Temporal(TemporalType.TIMESTAMP)
     var dateCreated: Date? = null,
-    var imagePath: String,
+    var imagePath: String? = null,
     var name: String
 )
