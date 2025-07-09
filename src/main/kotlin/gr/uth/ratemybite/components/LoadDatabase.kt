@@ -2,11 +2,9 @@ package gr.uth.ratemybite.components
 
 import gr.uth.ratemybite.controllers.IngredientController
 import gr.uth.ratemybite.controllers.ProductController
-import gr.uth.ratemybite.dto.ProductRequestDTO
 import gr.uth.ratemybite.entities.Company
 import gr.uth.ratemybite.entities.FoodCategory
 import gr.uth.ratemybite.entities.Ingredient
-import gr.uth.ratemybite.entities.NutritionScore
 import gr.uth.ratemybite.services.CompanyService
 import gr.uth.ratemybite.services.FoodCategoryService
 import gr.uth.ratemybite.services.ProductService
@@ -50,26 +48,26 @@ class LoadDatabase {
                     )
                 )
             ).toString()
-            logger.info(
-                "Preloading " + productController.addProduct(
-//                    Product(
+//            logger.info(
+//                "Preloading " + productController.addProduct(
+////                    Product(
+////                        name = "Banana",
+////                        barcode = "1212121212121",
+////                        nutritionScore = NutritionScore.A,
+////                        company = companyService.findCompanyByName("Jiggles Inc.").first(),
+////                        foodCategory = foodCategoryService.findFoodCategoryByName("Fruit").first(),
+////                        ingredients = mutableSetOf("alcohol")
+////                    )
+//                    ProductRequestDTO(
 //                        name = "Banana",
 //                        barcode = "1212121212121",
 //                        nutritionScore = NutritionScore.A,
-//                        company = companyService.findCompanyByName("Jiggles Inc.").first(),
-//                        foodCategory = foodCategoryService.findFoodCategoryByName("Fruit").first(),
-//                        ingredients = mutableSetOf("alcohol")
+//                        companyId = 1,
+//                        foodCategoryId = 1,
+//                        ingredientIds = listOf(1)
 //                    )
-                    ProductRequestDTO(
-                        name = "Banana",
-                        barcode = "1212121212121",
-                        nutritionScore = NutritionScore.A,
-                        companyId = 1,
-                        foodCategoryId = 1,
-                        ingredientIds = listOf(1)
-                    )
-                ).toString()
-            )
+//                ).toString()
+
         }
     }
 }

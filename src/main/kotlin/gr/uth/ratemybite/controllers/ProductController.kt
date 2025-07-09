@@ -2,15 +2,14 @@ package gr.uth.ratemybite.controllers
 
 import gr.uth.ratemybite.dto.ProductRequestDTO
 import gr.uth.ratemybite.entities.Product
-import gr.uth.ratemybite.services.CompanyService
-import gr.uth.ratemybite.services.FoodCategoryService
-import gr.uth.ratemybite.services.IngredientService
-import gr.uth.ratemybite.services.ProductService
-import org.apache.coyote.Response
+import gr.uth.ratemybite.services.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import java.nio.file.Paths
 import java.util.*
 
 @RestController
@@ -20,7 +19,10 @@ class ProductController @Autowired constructor(
     val foodCategoryService: FoodCategoryService,
     val companyService: CompanyService,
     val ingredientService: IngredientService,
+    val imageService: ImageService,
 ) {
+    @Value("\${file.no-image-available-path}")
+    lateinit var defaultImage: String
 
     @GetMapping("/all")
     fun findAllProducts(): List<Product> {
@@ -51,7 +53,8 @@ class ProductController @Autowired constructor(
                 ingredients = ingredients,
                 company = company,
                 foodCategory = foodCategory,
-                dateCreated = Date()
+                dateCreated = Date(),
+                imagePath = Paths.get(imageService.uploadDir, defaultImage).toString()
             )
         )
         return ResponseEntity.status(HttpStatus.CREATED).body(saved)
@@ -76,6 +79,17 @@ class ProductController @Autowired constructor(
         }
 
         return ResponseEntity.ok(productService.saveProduct(existingProduct))
+    }
+
+    @PostMapping("/{id}/image")
+    fun attachImage(
+        @PathVariable id: Long,
+        @RequestParam("file") file: MultipartFile
+    ): ResponseEntity<Product> {
+        val product = productService.findProductByIdOrThrow(id)
+        product.imagePath = imageService.saveImage(file)
+        val updated = productService.saveProduct(product)
+        return ResponseEntity.ok(updated)
     }
 
     @DeleteMapping("/{id}")
