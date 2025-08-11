@@ -1,0 +1,38 @@
+# Gradle
+.gradle/
+build/
+bin/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Kotlin
+*.class
+*.jar
+*.war
+*.ear
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+# Spring Boot
+spring.log
+
+# Test reports
+test-results/
+test-output/
