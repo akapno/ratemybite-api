@@ -14,22 +14,20 @@ import java.util.*
 class CompanyController @Autowired constructor(val companyService: CompanyService, val productService: ProductService) {
 
     @GetMapping("/all")
-    fun findAllCompanies(): List<Company> {
-        return companyService.findAllCompanies()
-    }
+    fun findAllCompanies() = companyService.findAllCompanies()
 
     @GetMapping("/get/{id}")
-    fun findCompanyById(@PathVariable id: Long): Optional<Company> {
-        return companyService.findCompanyById(id)
-    }
+    fun findCompanyById(@PathVariable id: Long) = companyService.findCompanyById(id)
 
     @GetMapping("/get")
-    fun findCompanyByName(@RequestParam name: String): List<Company> {
-        return companyService.findCompanyByName(name)
-    }
+    fun findCompanyByName(@RequestParam name: String) = companyService.findCompanyByName(name)
 
     @PostMapping("/add")
-    fun addCompany(@RequestParam name: String): ResponseEntity<Company> {
+    fun addCompany(@RequestParam name: String): ResponseEntity<Any> {
+        if (companyService.findCompanyByName(name).isNotEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(mapOf("error" to "Company with the same name already exists."))
+        }
         val saved = companyService.saveCompany(Company(name = name))
         return ResponseEntity.status(HttpStatus.CREATED).body(saved)
     }
@@ -37,11 +35,9 @@ class CompanyController @Autowired constructor(val companyService: CompanyServic
     @PutMapping("/update/{id}")
     fun updateCompany(@PathVariable id: Long, @RequestBody req: Company): ResponseEntity<Company> {
         val existingCompany = companyService.findCompanyByIdOrThrow(id)
-
         existingCompany.apply {
             name = req.name
         }
-
         return ResponseEntity.ok(companyService.saveCompany(existingCompany))
     }
 
