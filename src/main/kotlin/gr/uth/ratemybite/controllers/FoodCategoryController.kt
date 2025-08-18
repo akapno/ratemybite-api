@@ -13,20 +13,22 @@ import java.util.*
 class FoodCategoryController @Autowired constructor(val foodCategoryService: FoodCategoryService) {
 
     @GetMapping("/all")
-    fun findAllFoodCategories() = foodCategoryService.findAllFoodCategories()
+    fun findAllFoodCategories(): List<FoodCategory> {
+        return foodCategoryService.findAllFoodCategories()
+    }
 
     @GetMapping("/get/{id}")
-    fun findCompanyById(@PathVariable id: Long) = foodCategoryService.findFoodCategoryById(id)
+    fun findCompanyById(@PathVariable id: Long): Optional<FoodCategory> {
+        return foodCategoryService.findFoodCategoryById(id)
+    }
 
     @GetMapping("/get")
-    fun findFoodCategoryByName(@RequestParam name: String) = foodCategoryService.findFoodCategoryByName(name)
+    fun findFoodCategoryByName(@RequestParam name: String): List<FoodCategory> {
+        return foodCategoryService.findFoodCategoryByName(name)
+    }
 
     @PostMapping("/add")
-    fun addFoodCategory(@RequestParam name: String): ResponseEntity<Any> {
-        if (foodCategoryService.findFoodCategoryByName(name).isNotEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(mapOf("error" to "Food category with the same name already exists."))
-        }
+    fun addFoodCategory(@RequestParam name: String): ResponseEntity<FoodCategory> {
         val saved = foodCategoryService.saveFoodCateogory(FoodCategory(name = name))
         return ResponseEntity.status(HttpStatus.CREATED).body(saved)
     }
@@ -34,9 +36,11 @@ class FoodCategoryController @Autowired constructor(val foodCategoryService: Foo
     @PutMapping("/update/{id}")
     fun updateFoodCategory(@PathVariable id: Long, @RequestBody req: FoodCategory): ResponseEntity<FoodCategory> {
         val existingFoodCategory = foodCategoryService.findFoodCategoryByIdOrThrow(id)
+
         existingFoodCategory.apply {
             name = req.name
         }
+
         return ResponseEntity.ok(foodCategoryService.saveFoodCateogory(existingFoodCategory))
     }
 

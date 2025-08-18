@@ -25,14 +25,10 @@ class IngredientController @Autowired constructor(val ingredientService: Ingredi
         ingredientService.findIngredientByName(name)
 
     @PostMapping("/add")
-    fun addIngredient(@RequestBody ingredient: Ingredient): ResponseEntity<Any> {
-        if (ingredientService.findIngredientByName(ingredient.name).isNotEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(mapOf("error" to "Ingredient with the same name already exists."))
-        }
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(ingredientService.saveIngredient(ingredient))
-    }
+    fun addIngredient(@RequestBody ingredient: Ingredient): ResponseEntity<Ingredient> =
+        ResponseEntity.status(HttpStatus.CREATED).body(
+            ingredientService.saveIngredient(ingredient)
+        )
 
     @PutMapping("/update/{id}")
     fun updateIngredient(@PathVariable id: Long, @RequestBody req: Ingredient): ResponseEntity<Ingredient> =
