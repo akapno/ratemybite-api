@@ -69,7 +69,7 @@ constructor(
                                 foodCategory = foodCategory,
                                 dateCreated = Date(),
                                 imagePath =
-                                        Paths.get(imageService.uploadDir, defaultImage).toString()
+                                        Paths.get(defaultImage).toString()
                         )
                 )
         return ResponseEntity.status(HttpStatus.CREATED).body(saved)

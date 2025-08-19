@@ -38,16 +38,16 @@ class LoadDatabase {
                     FoodCategory(name = "Fruit")
                 ).toString()
             )
-            logger.info(
-                "Preloading " + ingredientController.addIngredient(
-                    Ingredient(
-                        name = "Wheat",
-                        allergen = false,
-                        description = "Harvert",
-                        points = 100
-                    )
-                )
-            ).toString()
+            // logger.info(
+            //     "Preloading " + ingredientController.addIngredient(
+            //         Ingredient(
+            //             name = "Wheat",
+            //             allergen = false,
+            //             description = "Harvert",
+            //             points = 100
+            //         )
+            //     )
+            // ).toString()
 //            logger.info(
 //                "Preloading " + productController.addProduct(
 ////                    Product(

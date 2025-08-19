@@ -33,7 +33,7 @@ class ImageService(@Value("\${file.upload-dir}") val uploadDir: String) {
         val filePath = randomDirPath.resolve(fileName)
         Files.copy(file.inputStream, filePath, StandardCopyOption.REPLACE_EXISTING)
 
-        return filePath.toString()
+        return filePath.toAbsolutePath().toString()
     }
 
     @Throws(MalformedURLException::class)
