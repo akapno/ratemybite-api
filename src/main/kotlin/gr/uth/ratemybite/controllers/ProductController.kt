@@ -129,6 +129,30 @@ constructor(
         return ResponseEntity.ok(productService.saveProduct(existingProduct))
     }
 
+        // Product DTO body request must have all fields completed
+    @PutMapping("/update-with-names/{id}")
+    fun updateProductWithNames(
+            @PathVariable id: Long,
+            @RequestBody req: ProductPostDTO
+    ): ResponseEntity<Product> {
+        val existingProduct = productService.findProductByIdOrThrow(id)
+
+        val company = companyService.findCompanyByNameOrThrow(req.companyName)
+        val foodCategory = foodCategoryService.findFoodCategoryByNameOrThrow(req.foodCategoryName)
+        val ingredients = mapIdsToIngredients(req)
+
+        existingProduct.apply {
+            barcode = req.barcode
+            name = req.name
+            nutritionScore = req.nutritionScore
+            this.ingredients = ingredients
+            this.company = company
+            this.foodCategory = foodCategory
+        }
+
+        return ResponseEntity.ok(productService.saveProduct(existingProduct))
+    }
+
     @PostMapping("/{id}/image")
     fun attachImage(
             @PathVariable id: Long,
