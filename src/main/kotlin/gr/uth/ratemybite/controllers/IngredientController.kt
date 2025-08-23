@@ -21,12 +21,12 @@ class IngredientController @Autowired constructor(val ingredientService: Ingredi
         ingredientService.findIngredientById(id)
 
     @GetMapping("/get")
-    fun findIngredientByName(@RequestParam name: String): List<Ingredient> =
+    fun findIngredientByName(@RequestParam name: String): Optional<Ingredient> =
         ingredientService.findIngredientByName(name)
 
     @PostMapping("/add")
     fun addIngredient(@RequestBody ingredient: Ingredient): ResponseEntity<Any> {
-        if (ingredientService.findIngredientByName(ingredient.name).isNotEmpty()) {
+        if (ingredientService.findIngredientByName(ingredient.name).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(mapOf("error" to "Ingredient with the same name already exists."))
         }

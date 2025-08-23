@@ -1,6 +1,7 @@
 package gr.uth.ratemybite.controllers
 
 import gr.uth.ratemybite.dto.ProductRequestDTO
+import gr.uth.ratemybite.dto.ProductPostDTO
 import gr.uth.ratemybite.entities.Product
 import gr.uth.ratemybite.services.*
 import java.nio.file.Paths
@@ -75,6 +76,35 @@ constructor(
         return ResponseEntity.status(HttpStatus.CREATED).body(saved)
     }
 
+    
+    @PostMapping("/add-with-names")
+    fun addProductWithNames(@RequestBody req: ProductPostDTO): ResponseEntity<Any> {
+        if (productService.findProductsByName(req.name).isNotEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(mapOf("error" to "Product with the same name already exists."))
+        }
+
+        val company = companyService.findCompanyByNameOrThrow(req.companyName)
+        val foodCategory = foodCategoryService.findFoodCategoryByNameOrThrow(req.foodCategoryName)
+        val ingredients = mapIdsToIngredients(req)
+
+        val saved =
+                productService.saveProduct(
+                        Product(
+                                barcode = req.barcode,
+                                name = req.name,
+                                nutritionScore = req.nutritionScore,
+                                ingredients = ingredients,
+                                company = company,
+                                foodCategory = foodCategory,
+                                dateCreated = Date(),
+                                imagePath =
+                                        Paths.get(defaultImage).toString()
+                        )
+                )
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved)
+    }
+
     // Product DTO body request must have all fields completed
     @PutMapping("/update/{id}")
     fun updateProduct(
@@ -120,6 +150,12 @@ constructor(
     fun mapIdsToIngredients(req: ProductRequestDTO) =
             req.ingredientIds
                     ?.map { ingredientService.findIngredientByIdOrThrow(it) }
+                    ?.toMutableSet()
+                    ?: mutableSetOf()
+
+    fun mapIdsToIngredients(req: ProductPostDTO) =
+            req.ingredientNames
+                    ?.map { ingredientService.findIngredientByNameOrThrow(it) }
                     ?.toMutableSet()
                     ?: mutableSetOf()
 }
