@@ -30,8 +30,15 @@ class CompanyService @Autowired constructor(
             }
     }
 
-    fun findCompanyByName(name: String): List<Company> {
+    fun findCompanyByName(name: String): Optional<Company> {
         return companyRepository.findByName(name)
+    }
+
+    fun findCompanyByNameOrThrow(name: String): Company {
+    return companyRepository.findByName(name)
+        .orElseThrow {
+            ResponseStatusException(HttpStatus.NOT_FOUND, "Company(name: $name) not found.")
+        }
     }
 
     fun saveCompany(company: Company): Company {

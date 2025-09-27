@@ -14,17 +14,17 @@ import java.util.*
 class CompanyController @Autowired constructor(val companyService: CompanyService, val productService: ProductService) {
 
     @GetMapping("/all")
-    fun findAllCompanies() = companyService.findAllCompanies()
+    fun findAllCompanies(): List<Company> = companyService.findAllCompanies()
 
     @GetMapping("/get/{id}")
-    fun findCompanyById(@PathVariable id: Long) = companyService.findCompanyById(id)
+    fun findCompanyById(@PathVariable id: Long): Optional<Company> = companyService.findCompanyById(id)
 
     @GetMapping("/get")
-    fun findCompanyByName(@RequestParam name: String) = companyService.findCompanyByName(name)
+    fun findCompanyByName(@RequestParam name: String): Optional<Company> = companyService.findCompanyByName(name)
 
     @PostMapping("/add")
     fun addCompany(@RequestParam name: String): ResponseEntity<Any> {
-        if (companyService.findCompanyByName(name).isNotEmpty()) {
+        if (companyService.findCompanyByName(name).isPresent) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(mapOf("error" to "Company with the same name already exists."))
         }

@@ -30,8 +30,15 @@ class FoodCategoryService @Autowired constructor(
             }
     }
 
-    fun findFoodCategoryByName(name: String): List<FoodCategory> {
+    fun findFoodCategoryByName(name: String): Optional<FoodCategory> {
         return foodCategoryRepository.findByName(name)
+    }
+
+    fun findFoodCategoryByNameOrThrow(name: String): FoodCategory {
+        return foodCategoryRepository.findByName(name)
+            .orElseThrow {
+                ResponseStatusException(HttpStatus.NOT_FOUND, "FoodCategory(name: $name) not found.")
+            }
     }
 
     fun saveFoodCateogory(foodCategory: FoodCategory): FoodCategory {

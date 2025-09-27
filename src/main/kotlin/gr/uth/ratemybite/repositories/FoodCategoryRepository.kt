@@ -8,5 +8,5 @@ import java.util.*
 
 interface FoodCategoryRepository : ListCrudRepository<FoodCategory, Long> {
     fun save(foodCategory: FoodCategory): FoodCategory
-    fun findByName(name: String): List<FoodCategory>
+    fun findByName(name: String): Optional<FoodCategory>
 }
